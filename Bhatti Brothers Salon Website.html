@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhatti Brothers Salon | Premium Grooming | Men & Women</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            400: '#E5C158',
+                            500: '#D4AF37',
+                            600: '#AA820A',
+                        },
+                        obsidian: '#0A0A0E',
+                        surface: '#14141C',
+                        surfaceLight: '#1E1E2A',
+                    },
+                    fontFamily: {
+                        heading: ['Playfair Display', 'serif'],
+                        body: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0A0A0E;
+            color: #F3F4F6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .font-heading {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FFF099 0%, #D4AF37 50%, #997A15 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glass-panel {
+            background: rgba(20, 20, 28, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+        }
+
+        .glass-header {
+            background: rgba(10, 10, 14, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.35;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .shimmer-btn {
+            background: linear-gradient(90deg, #D4AF37 0%, #FFF099 50%, #D4AF37 100%);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0A0A0E;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2A2A3A;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D4AF37;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen text-slate-100 selection:bg-gold-500 selection:text-black">
+
+    <!-- Canvas Particle Background -->
+    <canvas id="bgCanvas"></canvas>
+
+    <!-- Header Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-header transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="#home" class="flex items-center gap-3 group">
+                    <div class="relative w-12 h-12 rounded-full p-0.5 bg-gradient-to-tr from-gold-500 via-amber-200 to-gold-600 group-hover:scale-105 transition-transform duration-300">
+                        <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&q=80&w=200" 
+                             alt="Bhatti Brothers Salon" 
+                             class="w-full h-full object-cover rounded-full border border-black"
+                             onerror="this.src='https://placehold.co/100x100/14141C/D4AF37?text=BB+Salon'" />
+                    </div>
+                    <div>
+                        <span class="font-heading text-xl font-bold tracking-wider text-white group-hover:text-gold-400 transition-colors">
+                            BHATTI BROTHERS
+                        </span>
+                        <span class="block text-xs font-semibold tracking-widest text-gold-500 uppercase">
+                            Salon 💈
+                        </span>
+                    </div>
+                </a>
+
+                <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+                    <a href="#home" class="hover:text-gold-400 transition-colors">Home</a>
+                    <a href="#about" class="hover:text-gold-400 transition-colors">About</a>
+                    <a href="#services" class="hover:text-gold-400 transition-colors">Services</a>
+                    <a href="#gallery" class="hover:text-gold-400 transition-colors">Gallery</a>
+                    <a href="#pricing" class="hover:text-gold-400 transition-colors">Packages</a>
+                    <a href="#contact" class="hover:text-gold-400 transition-colors">Contact</a>
+                </nav>
+
+                <div class="flex items-center gap-4">
+                    <button onclick="openBookingModal()" class="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-bold text-black shimmer-btn shadow-lg hover:opacity-90 transition-all transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-calendar-check mr-2"></i> Book Appointment
+                    </button>
+
+                    <button id="mobileMenuBtn" class="md:hidden p-2 text-gray-300 hover:text-gold-400 focus:outline-none">
+                        <i class="fa-solid fa-bars-staggered text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobileMenu" class="hidden md:hidden glass-panel border-t border-gold-500/20 px-4 pt-3 pb-6 space-y-3">
+            <a href="#home" class="block px-3 py-2 rounded-lg text-base font-medium text-gray-200 hover:bg-gold-500/10 hover:text-gold-400">Home</a>
+            <a href="#about" class="block px-3 py-2 rounded-lg text-base font-medium text-gray-200 hover:bg-gold-500/10 hover:text-gold-400">About Us</a>
+            <a href="#services" class="block px-3 py-2 rounded-lg text-base font-medium text-gray-200 hover:bg-gold-500/10 hover:text-gold-400">Services</a>
+            <a href="#gallery" class="block px-3 py-2 rounded-lg text-base font-medium text-gray-200 hover:bg-gold-500/10 hover:text-gold-400">Gallery</a>
+            <a href="#pricing" class="block px-3 py-2 rounded-lg text-base font-medium text-gray-200 hover:bg-gold-500/10 hover:text-gold-400">Packages</a>
+            <a href="#contact" class="block px-3 py-2 rounded-lg text-base font-medium text-gray-200 hover:bg-gold-500/10 hover:text-gold-400">Contact</a>
+            <button onclick="openBookingModal()" class="w-full mt-2 py-3 rounded-xl text-sm font-bold text-black shimmer-btn">
+                Book Appointment Now
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative z-10 pt-20">
+
+        <!-- Hero Section -->
+        <section id="home" class="relative min-h-[90vh] flex items-center justify-center overflow-hidden py-20 px-4 sm:px-6 lg:px-8">
+            <div class="absolute inset-0 z-0">
+                <div class="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/80 to-obsidian/40 z-10"></div>
+                <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=1920" 
+                     alt="Salon Interior background" 
+                     class="w-full h-full object-cover opacity-30 scale-105 animate-pulse transition-all duration-10000" />
+            </div>
+
+            <div class="relative z-20 max-w-5xl mx-auto text-center space-y-8">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel text-xs sm:text-sm font-semibold text-gold-400 border border-gold-500/30 shadow-xl">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span>OPEN TODAY: 9:00 AM – 1:00 AM (Mon 3:00 PM – 1:00 AM)</span>
+                </div>
+
+                <h1 class="text-4xl sm:text-6xl md:text-7xl font-bold font-heading tracking-tight text-white leading-tight">
+                    Refine Your Style at <br />
+                    <span class="gold-gradient-text">BHATTI BROTHERS SALON</span>
+                </h1>
+
+                <p class="max-w-2xl mx-auto text-gray-300 text-lg sm:text-xl font-light leading-relaxed">
+                    ✨ Premium Grooming | Men & Women ✨ <br />
+                    Experience luxury hair styling, precision beard trimming, skin care, and modern transformations.
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                    <button onclick="openBookingModal()" class="w-full sm:w-auto px-8 py-4 rounded-full text-base font-bold text-black shimmer-btn shadow-2xl hover:scale-105 transition-all">
+                        <i class="fa-solid fa-scissors mr-2"></i> Book Your Slot
+                    </button>
+                    <a href="#services" class="w-full sm:w-auto px-8 py-4 rounded-full text-base font-semibold text-white glass-panel hover:bg-white/10 border border-white/20 hover:border-gold-500/50 transition-all">
+                        Explore Services
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-12 max-w-4xl mx-auto">
+                    <div class="glass-panel p-4 rounded-2xl text-center border-t-2 border-gold-500">
+                        <h3 class="text-2xl sm:text-3xl font-bold gold-gradient-text">153.4K+</h3>
+                        <p class="text-xs text-gray-400 uppercase tracking-wider mt-1">TikTok Likes</p>
+                    </div>
+                    <div class="glass-panel p-4 rounded-2xl text-center border-t-2 border-gold-500">
+                        <h3 class="text-2xl sm:text-3xl font-bold gold-gradient-text">3,480+</h3>
+                        <p class="text-xs text-gray-400 uppercase tracking-wider mt-1">Followers</p>
+                    </div>
+                    <div class="glass-panel p-4 rounded-2xl text-center border-t-2 border-gold-500">
+                        <h3 class="text-2xl sm:text-3xl font-bold gold-gradient-text">10,000+</h3>
+                        <p class="text-xs text-gray-400 uppercase tracking-wider mt-1">Clients Served</p>
+                    </div>
+                    <div class="glass-panel p-4 rounded-2xl text-center border-t-2 border-gold-500">
+                        <h3 class="text-2xl sm:text-3xl font-bold gold-gradient-text">4.9 ★</h3>
+                        <p class="text-xs text-gray-400 uppercase tracking-wider mt-1">Rating</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-gold-500 to-amber-700 rounded-3xl blur opacity-30 group-hover:opacity-60 transition duration-1000"></div>
+                    <div class="relative rounded-3xl overflow-hidden glass-panel p-2">
+                        <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&q=80&w=800" 
+                             alt="Stylist Crafting Haircut" 
+                             class="w-full h-[450px] object-cover rounded-2xl transition duration-500 group-hover:scale-105" />
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="inline-block px-3 py-1 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-400 text-xs font-bold uppercase tracking-widest">
+                        About Bhatti Brothers
+                    </div>
+                    <h2 class="text-3xl sm:text-5xl font-heading font-bold text-white leading-tight">
+                        Where Precision Meets Modern Barber Crafting
+                    </h2>
+                    <p class="text-gray-300 leading-relaxed font-light text-base sm:text-lg">
+                        At Bhatti Brothers Salon, we believe grooming is an art form. From trending fades, mullets, texture cuts, and modern hair color to relaxing skin care treatments, our team delivers high-end bespoke salon experiences for both men and women.
+                    </p>
+                    <div class="space-y-3 pt-2">
+                        <div class="flex items-center gap-3 text-gray-200">
+                            <i class="fa-solid fa-circle-check text-gold-400"></i>
+                            <span>Certified Master Stylists & Color Experts</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-gray-200">
+                            <i class="fa-solid fa-circle-check text-gold-400"></i>
+                            <span>Hygienic, Sterilized Tools & Premium Imported Products</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-gray-200">
+                            <i class="fa-solid fa-circle-check text-gold-400"></i>
+                            <span>VIP Grooming Atmosphere with Private Consultation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-12">
+                <span class="px-3 py-1 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-400 text-xs font-bold uppercase tracking-widest">
+                    Our Menu
+                </span>
+                <h2 class="text-3xl sm:text-5xl font-heading font-bold text-white">
+                    Signature Services
+                </h2>
+                <p class="text-gray-400">Choose from our curated grooming & aesthetic treatments.</p>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="flex flex-wrap items-center justify-center gap-2 mb-10" id="serviceTabs">
+                <button onclick="filterServices('all')" class="service-tab-btn active px-5 py-2.5 rounded-full text-sm font-semibold glass-panel text-gold-400 border-gold-500 transition-all">All Services</button>
+                <button onclick="filterServices('mens')" class="service-tab-btn px-5 py-2.5 rounded-full text-sm font-semibold glass-panel text-gray-400 hover:text-white transition-all">Men's Hair & Beard</button>
+                <button onclick="filterServices('womens')" class="service-tab-btn px-5 py-2.5 rounded-full text-sm font-semibold glass-panel text-gray-400 hover:text-white transition-all">Women's Styling</button>
+                <button onclick="filterServices('facial')" class="service-tab-btn px-5 py-2.5 rounded-full text-sm font-semibold glass-panel text-gray-400 hover:text-white transition-all">Facial & Spa</button>
+            </div>
+
+            <!-- Service Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="servicesGrid">
+                
+                <div class="service-card mens glass-panel p-6 rounded-3xl border border-white/5 hover:border-gold-500/40 transition-all duration-300 group flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="p-3 rounded-2xl bg-gold-500/10 text-gold-400">
+                                <i class="fa-solid fa-scissors text-2xl"></i>
+                            </span>
+                            <span class="text-xl font-bold text-gold-400">RS. 1,500</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-gold-400 transition-colors">Executive Fade & Style</h3>
+                        <p class="text-gray-400 text-sm mt-2">Precision haircut tailored to head shape, includes hair wash, scalp massage, and styling finish.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+                        <span class="text-xs text-gray-500"><i class="fa-regular fa-clock mr-1"></i> 45 Mins</span>
+                        <button onclick="openBookingModal('Executive Fade & Style')" class="text-xs font-bold text-gold-400 hover:text-white uppercase tracking-wider">Book Now <i class="fa-solid fa-chevron-right ml-1"></i></button>
+                    </div>
+                </div>
+
+                <div class="service-card mens glass-panel p-6 rounded-3xl border border-white/5 hover:border-gold-500/40 transition-all duration-300 group flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="p-3 rounded-2xl bg-gold-500/10 text-gold-400">
+                                <i class="fa-solid fa-user-ninja text-2xl"></i>
+                            </span>
+                            <span class="text-xl font-bold text-gold-400">RS. 1,000</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-gold-400 transition-colors">Royal Beard Sculpting</h3>
+                        <p class="text-gray-400 text-sm mt-2">Razor-sharp line alignment, hot towel treatment, conditioning beard oil, and shaping.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+                        <span class="text-xs text-gray-500"><i class="fa-regular fa-clock mr-1"></i> 30 Mins</span>
+                        <button onclick="openBookingModal('Royal Beard Sculpting')" class="text-xs font-bold text-gold-400 hover:text-white uppercase tracking-wider">Book Now <i class="fa-solid fa-chevron-right ml-1"></i></button>
+                    </div>
+                </div>
+
+                <div class="service-card womens glass-panel p-6 rounded-3xl border border-white/5 hover:border-gold-500/40 transition-all duration-300 group flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="p-3 rounded-2xl bg-gold-500/10 text-gold-400">
+                                <i class="fa-solid fa-wand-magic-sparkles text-2xl"></i>
+                            </span>
+                            <span class="text-xl font-bold text-gold-400">RS. 3,500</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-gold-400 transition-colors">Women's Layer & Styling</h3>
+                        <p class="text-gray-400 text-sm mt-2">Customized women cut, deep conditioning treatment, and glam blowout finish.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+                        <span class="text-xs text-gray-500"><i class="fa-regular fa-clock mr-1"></i> 60 Mins</span>
+                        <button onclick="openBookingModal('Womens Layer Cut')" class="text-xs font-bold text-gold-400 hover:text-white uppercase tracking-wider">Book Now <i class="fa-solid fa-chevron-right ml-1"></i></button>
+                    </div>
+                </div>
+
+                <div class="service-card facial glass-panel p-6 rounded-3xl border border-white/5 hover:border-gold-500/40 transition-all duration-300 group flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="p-3 rounded-2xl bg-gold-500/10 text-gold-400">
+                                <i class="fa-solid fa-sparkles text-2xl"></i>
+                            </span>
+                            <span class="text-xl font-bold text-gold-400">RS. 4,500</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-gold-400 transition-colors">Hydra Glow Facial</h3>
+                        <p class="text-gray-400 text-sm mt-2">Deep pore cleansing, exfoliation, blackhead extraction, and hydra hydration glow therapy.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+                        <span class="text-xs text-gray-500"><i class="fa-regular fa-clock mr-1"></i> 60 Mins</span>
+                        <button onclick="openBookingModal('Hydra Glow Facial')" class="text-xs font-bold text-gold-400 hover:text-white uppercase tracking-wider">Book Now <i class="fa-solid fa-chevron-right ml-1"></i></button>
+                    </div>
+                </div>
+
+                <div class="service-card mens womens glass-panel p-6 rounded-3xl border border-white/5 hover:border-gold-500/40 transition-all duration-300 group flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="p-3 rounded-2xl bg-gold-500/10 text-gold-400">
+                                <i class="fa-solid fa-fill-drip text-2xl"></i>
+                            </span>
+                            <span class="text-xl font-bold text-gold-400">RS. 5,000+</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-gold-400 transition-colors">Keratin Hair Smoothing</h3>
+                        <p class="text-gray-400 text-sm mt-2">Smooth out frizz, add shine, and restore hair strength with organic protein treatment.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+                        <span class="text-xs text-gray-500"><i class="fa-regular fa-clock mr-1"></i> 90 Mins</span>
+                        <button onclick="openBookingModal('Keratin Smoothing')" class="text-xs font-bold text-gold-400 hover:text-white uppercase tracking-wider">Book Now <i class="fa-solid fa-chevron-right ml-1"></i></button>
+                    </div>
+                </div>
+
+                <div class="service-card mens glass-panel p-6 rounded-3xl border border-white/5 hover:border-gold-500/40 transition-all duration-300 group flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="p-3 rounded-2xl bg-gold-500/10 text-gold-400">
+                                <i class="fa-solid fa-crown text-2xl"></i>
+                            </span>
+                            <span class="text-xl font-bold text-gold-400">RS. 8,500</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-gold-400 transition-colors">Full Groom Makeover</h3>
+                        <p class="text-gray-400 text-sm mt-2">Complete wedding/event package: haircut, beard trim, gold facial, scalp spa, and styling.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+                        <span class="text-xs text-gray-500"><i class="fa-regular fa-clock mr-1"></i> 120 Mins</span>
+                        <button onclick="openBookingModal('Groom Makeover')" class="text-xs font-bold text-gold-400 hover:text-white uppercase tracking-wider">Book Now <i class="fa-solid fa-chevron-right ml-1"></i></button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="gallery" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-12">
+                <span class="px-3 py-1 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-400 text-xs font-bold uppercase tracking-widest">
+                    Portfolio
+                </span>
+                <h2 class="text-3xl sm:text-5xl font-heading font-bold text-white">
+                    Transformation Showcase
+                </h2>
+                <p class="text-gray-400">Real styles created daily for our valued clients.</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                <div class="relative rounded-2xl overflow-hidden group cursor-pointer h-64 sm:h-80 glass-panel" onclick="openImageModal(this.children[0].src)">
+                    <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&q=80&w=600" alt="Haircut Style 1" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                        <span class="text-gold-400 text-xs font-bold uppercase">Textured Crop Fade</span>
+                        <p class="text-white text-sm font-semibold">1.3M+ Views Style</p>
+                    </div>
+                </div>
+                <div class="relative rounded-2xl overflow-hidden group cursor-pointer h-64 sm:h-80 glass-panel" onclick="openImageModal(this.children[0].src)">
+                    <img src="https://images.unsplash.com/photo-1517832606299-7ae9b720a186?auto=format&fit=crop&q=80&w=600" alt="Haircut Style 2" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                        <span class="text-gold-400 text-xs font-bold uppercase">Modern Flow & Mullet</span>
+                        <p class="text-white text-sm font-semibold">373.4K Likes Cut</p>
+                    </div>
+                </div>
+                <div class="relative rounded-2xl overflow-hidden group cursor-pointer h-64 sm:h-80 glass-panel" onclick="openImageModal(this.children[0].src)">
+                    <img src="https://images.unsplash.com/photo-1567894340315-735d7c361db0?auto=format&fit=crop&q=80&w=600" alt="Haircut Style 3" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                        <span class="text-gold-400 text-xs font-bold uppercase">Beard Sculpting & Trim</span>
+                        <p class="text-white text-sm font-semibold">Masterclass Grooming</p>
+                    </div>
+                </div>
+                <div class="relative rounded-2xl overflow-hidden group cursor-pointer h-64 sm:h-80 glass-panel" onclick="openImageModal(this.children[0].src)">
+                    <img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?auto=format&fit=crop&q=80&w=600" alt="Haircut Style 4" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                        <span class="text-gold-400 text-xs font-bold uppercase">Curly Perm & Taper</span>
+                        <p class="text-white text-sm font-semibold">Trending Look</p>
+                    </div>
+                </div>
+                <div class="relative rounded-2xl overflow-hidden group cursor-pointer h-64 sm:h-80 glass-panel" onclick="openImageModal(this.children[0].src)">
+                    <img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?auto=format&fit=crop&q=80&w=600" alt="Haircut Style 5" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                        <span class="text-gold-400 text-xs font-bold uppercase">Slick Back Undercut</span>
+                        <p class="text-white text-sm font-semibold">Classic Gentleman</p>
+                    </div>
+                </div>
+                <div class="relative rounded-2xl overflow-hidden group cursor-pointer h-64 sm:h-80 glass-panel" onclick="openImageModal(this.children[0].src)">
+                    <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=600" alt="Haircut Style 6" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                        <span class="text-gold-400 text-xs font-bold uppercase">Women's Hair Coloring</span>
+                        <p class="text-white text-sm font-semibold">Balayage & Highlights</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-12">
+                <span class="px-3 py-1 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-400 text-xs font-bold uppercase tracking-widest">
+                    VIP Packages
+                </span>
+                <h2 class="text-3xl sm:text-5xl font-heading font-bold text-white">
+                    Exclusive Combo Deals
+                </h2>
+                <p class="text-gray-400">Save more with our curated premium packages.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass-panel rounded-3xl p-8 border border-white/10 hover:border-gold-500/40 transition-all flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold text-white font-heading">Regular Groom Pass</h3>
+                        <p class="text-gray-400 text-xs mt-1">For monthly maintenance</p>
+                        <div class="my-6">
+                            <span class="text-4xl font-extrabold text-gold-400">RS. 2,800</span>
+                            <span class="text-gray-500 text-sm">/ month</span>
+                        </div>
+                        <ul class="space-y-3 text-sm text-gray-300">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400"></i> 2 Haircuts per month</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400"></i> 2 Beard Trims or Shaves</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400"></i> Scalp Wash & Styling</li>
+                        </ul>
+                    </div>
+                    <button onclick="openBookingModal('Regular Groom Pass')" class="w-full mt-8 py-3 rounded-full text-sm font-bold border border-gold-500 text-gold-400 hover:bg-gold-500 hover:text-black transition-all">Select Pass</button>
+                </div>
+
+                <div class="glass-panel rounded-3xl p-8 border-2 border-gold-500 relative transform md:-translate-y-4 shadow-2xl flex flex-col justify-between">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gold-500 text-black text-xs font-extrabold uppercase rounded-full tracking-wider shadow-lg">
+                        Most Popular
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white font-heading">Royal VIP Combo</h3>
+                        <p class="text-gray-400 text-xs mt-1">Complete luxury relaxation</p>
+                        <div class="my-6">
+                            <span class="text-4xl font-extrabold text-gold-400">RS. 5,999</span>
+                            <span class="text-gray-500 text-sm">/ session</span>
+                        </div>
+                        <ul class="space-y-3 text-sm text-gray-300">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400"></i> Signature Haircut & Beard Art</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400"></i> Organic Charcoal Facial</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400"></i> Head, Shoulder & Arm Massage</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400"></i> Free Refreshments & Coffee</li>
+                        </ul>
+                    </div>
+                    <button onclick="openBookingModal('Royal VIP Combo')" class="w-full mt-8 py-3.5 rounded-full text-sm font-bold text-black shimmer-btn shadow-lg hover:scale-105 transition-all">Book VIP Experience</button>
+                </div>
+
+                <div class="glass-panel rounded-3xl p-8 border border-white/10 hover:border-gold-500/40 transition-all flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold text-white font-heading">Groom / Bridal Special</h3>
+                        <p class="text-gray-400 text-xs mt-1">For your big day</p>
+                        <div class="my-6">
+                            <span class="text-4xl font-extrabold text-gold-400">RS. 12,500</span>
+                            <span class="text-gray-500 text-sm">/ package</span>
+                        </div>
+                        <ul class="space-y-3 text-sm text-gray-300">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400"></i> Full Body & Facial Spa</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400"></i> Premium Hair Styling & Color Cut</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400"></i> Manicure & Pedicure Treatment</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400"></i> Exclusive Private Studio Suite</li>
+                        </ul>
+                    </div>
+                    <button onclick="openBookingModal('Groom Special Package')" class="w-full mt-8 py-3 rounded-full text-sm font-bold border border-gold-500 text-gold-400 hover:bg-gold-500 hover:text-black transition-all">Reserve Package</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer Section -->
+        <footer id="contact" class="glass-header pt-16 pb-12 border-t border-gold-500/20 mt-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-white/10">
+                    
+                    <div class="space-y-4 md:col-span-1">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-gold-500 p-0.5 flex items-center justify-center">
+                                <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&q=80&w=200" alt="BB Salon" class="w-full h-full rounded-full object-cover" />
+                            </div>
+                            <span class="font-heading text-lg font-bold text-white">BHATTI BROTHERS</span>
+                        </div>
+                        <p class="text-sm text-gray-400 font-light">
+                            Premium Grooming Salon for Men & Women. Experience elite level haircuts, beard trims, facials, and beauty treatments.
+                        </p>
+                        <div class="flex gap-4 pt-2">
+                            <a href="https://www.instagram.com/bhattibrothers78" target="_blank" class="w-9 h-9 rounded-full glass-panel flex items-center justify-center text-gold-400 hover:bg-gold-500 hover:text-black transition-all">
+                                <i class="fa-brands fa-instagram"></i>
+                            </a>
+                            <a href="https://www.tiktok.com/@bhatti.brothers78" target="_blank" class="w-9 h-9 rounded-full glass-panel flex items-center justify-center text-gold-400 hover:bg-gold-500 hover:text-black transition-all">
+                                <i class="fa-brands fa-tiktok"></i>
+                            </a>
+                            <a href="https://wa.me/923000000000" target="_blank" class="w-9 h-9 rounded-full glass-panel flex items-center justify-center text-gold-400 hover:bg-gold-500 hover:text-black transition-all">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h4 class="text-white font-bold font-heading text-lg border-b border-gold-500/30 pb-2 inline-block">Working Hours</h4>
+                        <ul class="text-sm space-y-2 text-gray-300">
+                            <li class="flex justify-between">
+                                <span class="text-gray-400">Mon:</span>
+                                <span class="text-gold-400 font-semibold">3:00 PM – 1:00 AM</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span class="text-gray-400">Tue – Sun:</span>
+                                <span class="text-gold-400 font-semibold">9:00 AM – 1:00 AM</span>
+                            </li>
+                            <li class="pt-2 text-xs text-emerald-400 flex items-center gap-1">
+                                <i class="fa-solid fa-circle text-[8px]"></i> Booking available 24/7 online
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h4 class="text-white font-bold font-heading text-lg border-b border-gold-500/30 pb-2 inline-block">Quick Links</h4>
+                        <ul class="text-sm space-y-2 text-gray-400">
+                            <li><a href="#home" class="hover:text-gold-400 transition-colors">Home</a></li>
+                            <li><a href="#services" class="hover:text-gold-400 transition-colors">Services & Prices</a></li>
+                            <li><a href="#gallery" class="hover:text-gold-400 transition-colors">Hair Cut Gallery</a></li>
+                            <li><a href="#pricing" class="hover:text-gold-400 transition-colors">VIP Packages</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h4 class="text-white font-bold font-heading text-lg border-b border-gold-500/30 pb-2 inline-block">Salon Location</h4>
+                        <p class="text-sm text-gray-300">
+                            <i class="fa-solid fa-location-dot text-gold-400 mr-2"></i> Main Commercial Hub, City Center
+                        </p>
+                        <p class="text-sm text-gray-300">
+                            <i class="fa-solid fa-phone text-gold-400 mr-2"></i> +92 300 1234567
+                        </p>
+                        <button onclick="openBookingModal()" class="w-full mt-2 py-2.5 rounded-xl text-xs font-bold text-black shimmer-btn">
+                            Book Appointment Now
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="pt-8 text-center text-xs text-gray-500 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <p>© <span id="year"></span> Bhatti Brothers Salon. All Rights Reserved.</p>
+                    <p>Designed for Ultimate Style & Performance</p>
+                </div>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/923000000000?text=Hi%20Bhatti%20Brothers%20Salon,%20I%20want%20to%20book%20an%20appointment" 
+       target="_blank" 
+       class="fixed bottom-6 right-6 z-40 w-14 h-14 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center text-3xl shadow-2xl hover:scale-110 transition-all">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="glass-panel w-full max-w-lg rounded-3xl p-6 sm:p-8 border border-gold-500/30 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeBookingModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <div class="text-center mb-6">
+                <h3 class="text-2xl font-bold font-heading text-white">Book Your Salon Session</h3>
+                <p class="text-xs text-gold-400 mt-1">Bhatti Brothers Salon | Premium Grooming</p>
+            </div>
+
+            <form id="bookingForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">Your Full Name</label>
+                    <input type="text" id="custName" required placeholder="Ali Raza" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-white focus:outline-none focus:border-gold-500 text-sm" />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">Phone Number / WhatsApp</label>
+                    <input type="tel" id="custPhone" required placeholder="0300 1234567" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-white focus:outline-none focus:border-gold-500 text-sm" />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">Select Service</label>
+                    <select id="custService" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-white focus:outline-none focus:border-gold-500 text-sm">
+                        <option value="Executive Fade & Style">Executive Fade & Style (RS. 1,500)</option>
+                        <option value="Royal Beard Sculpting">Royal Beard Sculpting (RS. 1,000)</option>
+                        <option value="Womens Layer Cut">Women's Layer & Styling (RS. 3,500)</option>
+                        <option value="Hydra Glow Facial">Hydra Glow Facial (RS. 4,500)</option>
+                        <option value="Keratin Smoothing">Keratin Hair Smoothing (RS. 5,000+)</option>
+                        <option value="Royal VIP Combo">Royal VIP Combo (RS. 5,999)</option>
+                        <option value="Groom Special Package">Groom Special Package (RS. 12,500)</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">Preferred Date</label>
+                        <input type="date" id="custDate" required class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-white focus:outline-none focus:border-gold-500 text-sm" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">Time Slot</label>
+                        <select id="custTime" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-white focus:outline-none focus:border-gold-500 text-sm">
+                            <option value="10:00 AM">10:00 AM</option>
+                            <option value="01:00 PM">01:00 PM</option>
+                            <option value="04:00 PM">04:00 PM</option>
+                            <option value="07:00 PM">07:00 PM</option>
+                            <option value="10:00 PM">10:00 PM</option>
+                            <option value="12:00 AM">12:00 AM Midnight</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-4 mt-2 rounded-xl text-black font-bold text-sm shimmer-btn shadow-xl hover:opacity-95">
+                    Confirm & Send via WhatsApp <i class="fa-brands fa-whatsapp ml-2"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/90" onclick="closeImageModal()">
+        <div class="max-w-3xl max-h-[85vh] relative p-2">
+            <img id="previewImg" src="" alt="Gallery Preview" class="w-full h-full object-contain rounded-2xl border border-gold-500/50" />
+            <button class="absolute top-4 right-4 text-white text-2xl bg-black/50 p-2 rounded-full"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        document.getElementById('year').innerText = new Date().getFullYear();
+
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        function filterServices(category) {
+            const cards = document.querySelectorAll('.service-card');
+            const btns = document.querySelectorAll('#serviceTabs button');
+
+            btns.forEach(btn => {
+                btn.classList.remove('text-gold-400', 'border-gold-500');
+                btn.classList.add('text-gray-400');
+            });
+            event.target.classList.add('text-gold-400', 'border-gold-500');
+
+            cards.forEach(card => {
+                if(category === 'all' || card.classList.contains(category)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        const bookingModal = document.getElementById('bookingModal');
+        function openBookingModal(serviceName = '') {
+            if(serviceName) {
+                const select = document.getElementById('custService');
+                for(let i=0; i < select.options.length; i++) {
+                    if(select.options[i].value.toLowerCase().includes(serviceName.toLowerCase())) {
+                        select.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            bookingModal.classList.remove('hidden');
+        }
+
+        function closeBookingModal() {
+            bookingModal.classList.add('hidden');
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('custName').value;
+            const phone = document.getElementById('custPhone').value;
+            const service = document.getElementById('custService').value;
+            const date = document.getElementById('custDate').value;
+            const time = document.getElementById('custTime').value;
+
+            const text = `*New Booking Request - Bhatti Brothers Salon*%0A%0A*Name:* ${name}%0A*Phone:* ${phone}%0A*Service:* ${service}%0A*Date:* ${date}%0A*Time:* ${time}`;
+            window.open(`https://wa.me/923000000000?text=${text}`, '_blank');
+            closeBookingModal();
+        }
+
+        const imageModal = document.getElementById('imageModal');
+        const previewImg = document.getElementById('previewImg');
+        function openImageModal(src) {
+            previewImg.src = src;
+            imageModal.classList.remove('hidden');
+        }
+        function closeImageModal() {
+            imageModal.classList.add('hidden');
+        }
+
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height;
+                if (this.y > height) this.y = 0;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        const particles = Array.from({ length: 60 }, () => new Particle());
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateCanvas);
+        }
+
+        window.onload = function() {
+            animateCanvas();
+        }
+    </script>
+</body>
+</html>
